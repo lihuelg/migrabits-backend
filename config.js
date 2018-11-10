@@ -1,6 +1,6 @@
 'use strict';
 
-const config;
+const config = {};
 
 config.db = {
     user: 'root',
@@ -11,7 +11,6 @@ config.db = {
 config.db.details = {
     host: 'localhost',
     dialect: 'mysql',
-    port: '8889',
     operatorsAliases: false,
     pool: {
         max: 5,
