@@ -1,6 +1,8 @@
+'use strict';
+
 const Sequelize = require('sequelize');
 
-const {sequelize} = require('../config/db');
+const {sequelize} = require('../services/database');
 
 const User = sequelize.define('users', {
     id: {
