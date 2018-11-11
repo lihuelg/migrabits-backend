@@ -5,9 +5,8 @@ const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
+var Blacklist = require('../models/Blacklist');
 const authenticate = require('../middleware/authenticate');
-
-const secret = 'Secret-chan <3';
 
 const router = express.Router();
 
@@ -25,20 +24,31 @@ router.post('/users', (req, res) => {
   });
 });
 
-//Login --- needs refactoring(?) of token making
+//Login
 router.post('/users/login', (req, res) => {
   var body = _.pick(req.body, ['username', 'password']);  
 
   User.checkPassword(body.username, body.password).then((user) => {
-    var token = jwt.sign({ id: user.id }, secret).toString();
-    res.status(200).set({ auth: true, token: token }).send('Great success!');
-  }).catch((err) => {
-    res.status(400).send(err);
+    var token = User.generateToken(user.id);
+    res.status(200).set({ token: token }).send('Great success!');
+  }).catch(() => {
+    res.status(400).send('Incorrect username or password');
   });
 });
 
+//Self-Awareness
 router.get('/users/me', authenticate, (req, res) => {
   res.send(req.user);
+});
+
+//Log-out --- is this a GET request?
+router.get('/users/me/logout', authenticate, (req, res) => {
+  Blacklist.create({
+    token: req.headers['token']
+  }).then(() => {
+    delete req.headers['token'];
+    res.send('Great success!');
+  });
 });
 
 router.get('/users/:id', (req, res) => {

@@ -3,7 +3,7 @@
 const bodyParser = require('body-parser'); 
 const express = require('express');
 
-const router = require('./controllers/users')
+const router = require('./controllers/users');
 
 const app = express()
 

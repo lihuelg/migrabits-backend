@@ -3,6 +3,7 @@
 const Sequelize = require('sequelize');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const _ = require('lodash');
 
 const {sequelize} = require('../services/database');
 
@@ -41,24 +42,21 @@ function hashPassword(user) {
     }
 }
 
-//needs less of smt
-UserModel.checkPassword = function (username, password) {
-        return new Promise(async function (resolve, reject) {
+UserModel.checkPassword = async function (username, password) {
             let user = await UserModel.findOne({ where: { username } });
             if(!user){
-                reject ('User not found');
+                return Promise.reject();
             }
 
             if (await bcrypt.compare(password, user.password)) {
-                resolve(user);
+                return Promise.resolve(user);
             } else {
-                reject('Incorrect password');
+                return Promise.reject();
             }
-        })
 };
 
-UserModel.generateToken = function () {
-    
+UserModel.generateToken = function (id) {
+    return jwt.sign({ id }, secret, { expiresIn: '12h' }).toString();
 }
 
 UserModel.findByToken = function (token) {
@@ -67,7 +65,7 @@ UserModel.findByToken = function (token) {
     try {
         decoded = jwt.verify(token, secret);
     } catch (e) {
-        return Promise.reject();
+        return Promise.reject('Token couldnt be verified');
     }
 
     return this.findOne({
@@ -76,9 +74,5 @@ UserModel.findByToken = function (token) {
         }
     })
 };
-
-UserModel.sync().then(() => {
-    console.log('User table created');
-});
 
 module.exports = UserModel;
