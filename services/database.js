@@ -2,7 +2,7 @@
 
 const Sequelize = require('sequelize');
 
-const config = require('../config');
+const config = require('../config/config');
 
 const sequelize = new Sequelize(
   config.db.name,
@@ -16,10 +16,17 @@ sequelize.sync().then(() => {
 });
 
 //refactor(?) this and test if it works
-sequelize.query(
-  "CREATE EVENT ClearTokens "
-  +"ON SCHEDULE EVERY 1 DAY "
-  +"DO "
-  +"DELETE FROM blacklists WHERE ADDTIME(createdAt, 60) < NOW()");
+//it needs to turn on events scheduler with SET GLOBAL event_scheduler = ON;
+//to delete DROP EVENT ClearTokens
+/* sequelize.query(
+  'CREATE EVENT ClearTokens '
+  +'ON SCHEDULE EVERY 5 MINUTE '
+  +'DO '
+  +'DELETE FROM blacklists WHERE ADDTIME(createdAt, "5:00.000000") > NOW()'); */
+
+/* sequelize.query(
+  'ALTER EVENT ClearTokens '
+  +'ON SCHEDULE EVERY 1 MINUTE'
+); */
 
 module.exports = {sequelize};

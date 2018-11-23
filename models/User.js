@@ -7,7 +7,7 @@ const _ = require('lodash');
 
 const {sequelize} = require('../services/database');
 
-const secret = 'Secret-chan <3';
+const secret = process.env.JWT_SECRET;
 
 var userModel = {
     id: {
@@ -56,7 +56,7 @@ UserModel.checkPassword = async function (username, password) {
 };
 
 UserModel.generateToken = function (id) {
-    return jwt.sign({ id }, secret, { expiresIn: '12h' }).toString();
+    return jwt.sign({ id }, secret, { expiresIn: 300000 }).toString();
 }
 
 UserModel.findByToken = function (token) {

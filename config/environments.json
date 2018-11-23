@@ -1,0 +1,12 @@
+{
+    "test": {
+        "PORT": 3000,
+        "MONGODB_URI": "MigrabitsDBTest",
+        "JWT_SECRET": "9012op3h1298hdsuf0a8dfsdofh098sdh"
+    },
+    "development": {
+        "PORT": 3000,
+        "DB_NAME": "MigrabitsDB",
+        "JWT_SECRET": "fd87gfayb87gyv12iu3vkbd9fbdiosabf"
+    }
+}
